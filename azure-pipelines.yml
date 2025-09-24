@@ -1,5 +1,5 @@
 trigger:
-- main   # pipeline runs on each push to main branch
+- main
 
 pool:
   vmImage: 'ubuntu-latest'
@@ -10,8 +10,22 @@ steps:
     versionSpec: '3.x'
   displayName: 'Use Python 3'
 
+- script: python -m pip install --upgrade pip
+  displayName: 'Upgrade pip'
+
 - script: pip install -r requirements.txt
   displayName: 'Install dependencies'
 
-- script: python -m flask --app app run --port 5000
-  displayName: 'Run Flask App'
+- task: ArchiveFiles@2
+  inputs:
+    rootFolderOrFile: '$(System.DefaultWorkingDirectory)'
+    includeRootFolder: false
+    archiveType: 'zip'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/drop.zip'
+    replaceExistingArchive: true
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'drop'
+    publishLocation: 'Container'
