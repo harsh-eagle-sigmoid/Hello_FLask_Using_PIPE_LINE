@@ -1,5 +1,5 @@
 trigger:
-- main   # run pipeline when pushing to main branch
+- main   # pipeline runs on each push to main branch
 
 pool:
   vmImage: 'ubuntu-latest'
@@ -13,5 +13,5 @@ steps:
 - script: pip install -r requirements.txt
   displayName: 'Install dependencies'
 
-- script: python -m flask --app app run
+- script: python -m flask --app app run --port 5000
   displayName: 'Run Flask App'
